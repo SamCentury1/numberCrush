@@ -8,9 +8,9 @@ class GamePlayState extends ChangeNotifier {
     notifyListeners();
   }
 
-  late Map<dynamic,dynamic> _targets = {};
-  Map<dynamic,dynamic> get targets => _targets;
-  void setTargets(Map<dynamic,dynamic> value) {
+  late Map<dynamic, dynamic> _targets = {};
+  Map<dynamic, dynamic> get targets => _targets;
+  void setTargets(Map<dynamic, dynamic> value) {
     _targets = value;
     notifyListeners();
   }
@@ -20,14 +20,14 @@ class GamePlayState extends ChangeNotifier {
   void setLevel(int value) {
     _level = value;
     notifyListeners();
-  }  
+  }
 
   late int _columns = 0;
   int get columns => _columns;
   void setColumns(int value) {
     _columns = value;
     notifyListeners();
-  }  
+  }
 
   late int _rows = 0;
   int get rows => _rows;
@@ -36,16 +36,16 @@ class GamePlayState extends ChangeNotifier {
     notifyListeners();
   }
 
-  late Map<dynamic,dynamic> _previousTileData = {};
-  Map<dynamic,dynamic>  get previousTileData => _previousTileData;
-  void setPreviousTileData(Map<dynamic,dynamic>  value) {
+  late Map<dynamic, dynamic> _previousTileData = {};
+  Map<dynamic, dynamic> get previousTileData => _previousTileData;
+  void setPreviousTileData(Map<dynamic, dynamic> value) {
     _previousTileData = value;
     notifyListeners();
-  }  
+  }
 
-  late Map<dynamic,dynamic> _tileData = {};
-  Map<dynamic,dynamic>  get tileData => _tileData;
-  void setTileData(Map<dynamic,dynamic>  value) {
+  late Map<dynamic, dynamic> _tileData = {};
+  Map<dynamic, dynamic> get tileData => _tileData;
+  void setTileData(Map<dynamic, dynamic> value) {
     _tileData = value;
     notifyListeners();
   }
@@ -63,7 +63,6 @@ class GamePlayState extends ChangeNotifier {
     _dragEndTileIndex = value;
     notifyListeners();
   }
-
 
   late int _selectedTileIndex;
   int get selectedTileIndex => _selectedTileIndex;

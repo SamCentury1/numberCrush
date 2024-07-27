@@ -5,20 +5,25 @@ class GameLogic {
   void executePanStart(GamePlayState gamePlayState, var details) {
     late double dx = details.localPosition.dx;
     late double dy = details.localPosition.dy;
-    int tileCol = Helpers().getTileAxis(dx, gamePlayState.tileSize, gamePlayState.columns);
-    int tileRow = Helpers().getTileAxis(dy, gamePlayState.tileSize, gamePlayState.rows);
-    int tileIndex = Helpers().getTileIndexWWithId(tileRow, tileCol, gamePlayState.columns);
+    int tileCol = Helpers()
+        .getTileAxis(dx, gamePlayState.tileSize, gamePlayState.columns);
+    int tileRow =
+        Helpers().getTileAxis(dy, gamePlayState.tileSize, gamePlayState.rows);
+    int tileIndex =
+        Helpers().getTileIndexWWithId(tileRow, tileCol, gamePlayState.columns);
     gamePlayState.setDragStartTileIndex(tileIndex);
-  } 
+  }
 
   void executePanUpdate(GamePlayState gamePlayState, var details) {
-    late bool isOutOfBounds = Helpers().getIsOutOfBounds(gamePlayState, details);
+    late bool isOutOfBounds =
+        Helpers().getIsOutOfBounds(gamePlayState, details);
     if (!isOutOfBounds) {
-      Map<String,dynamic> tileObject = gamePlayState.tileData[gamePlayState.dragStartTileIndex];
+      Map<String, dynamic> tileObject =
+          gamePlayState.tileData[gamePlayState.dragStartTileIndex];
       if (tileObject["active"]) {
         late double dx = details.localPosition.dx;
         late double dy = details.localPosition.dy;
-        List<double> coords = [dx,dy];
+        List<double> coords = [dx, dy];
         Helpers().getCoordinatesPath(gamePlayState, coords);
         gamePlayState.setIsDragging(true);
       }
@@ -39,7 +44,7 @@ class GameLogic {
     gamePlayState.setDragStartTileIndex(null);
     gamePlayState.setDragPath([]);
     gamePlayState.setIsDragging(false);
-    gamePlayState.setDragDirection(null);
+    gamePlayState.setDragDirection("none");
     gamePlayState.setIsDragViolation(false);
     gamePlayState.setDragEndTileIndex(null);
   }
