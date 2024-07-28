@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:number_crush/functions/game_logic.dart';
+import 'package:number_crush/functions/helpers.dart';
 import 'package:number_crush/providers/game_play_state.dart';
 import 'package:number_crush/providers/settings_state.dart';
 import 'package:number_crush/screens/game_screen/components/tile_widget.dart';
@@ -14,6 +17,7 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   late SettingsState settingsState;
+  // late GamePlayState gamePlayState;
   @override
   void initState() {
     super.initState();
@@ -58,47 +62,163 @@ class _GameScreenState extends State<GameScreen> {
       return SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            title: Text("Level ${gamePlayState.level}"),
+            title: Center(child: Text("Level ${gamePlayState.level}")),
           ),
-          body: SizedBox(
-            width: settingsState.screenSizeData['width'],
-            height: settingsState.screenSizeData['height'],
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: gamePlayState.tileSize * 6,
-                  height: gamePlayState.tileSize,
-                  child: Center(
-                    child: SizedBox(
-                      width: gamePlayState.tileSize * 5.5,
-                      height: gamePlayState.tileSize * 0.8,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: getTargetElements(gamePlayState),
+          body: Stack(
+            children: [
+              SizedBox(
+                width: settingsState.screenSizeData['width'],
+                height: settingsState.screenSizeData['height'],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: gamePlayState.tileSize * gamePlayState.columns,
+                      height: gamePlayState.tileSize,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: getTargetElements(gamePlayState),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: gamePlayState.tileSize * 0.2,
+                    ),
+                    GestureDetector(
+                      onPanStart: (details) =>
+                          GameLogic().executePanStart(gamePlayState, details),
+                      onPanUpdate: (details) =>
+                          GameLogic().executePanUpdate(gamePlayState, details),
+                      onPanEnd: (details) =>
+                          GameLogic().executePanEnd(gamePlayState, details),
+                      child: Container(
+                          width: gamePlayState.tileSize * gamePlayState.columns,
+                          height: gamePlayState.tileSize * gamePlayState.rows,
+                          color: Color.fromRGBO(233, 233, 233, 1),
+                          child: Stack(
+                            children: getTileElements(gamePlayState),
+                          )),
+                    ),
+                    SizedBox(
+                        width: gamePlayState.tileSize,
+                        height: gamePlayState.tileSize,
+                        child: Center(
+                          child: IconButton(
+                              onPressed: () =>
+                                  GameLogic().executeUndo(gamePlayState),
+                              icon: Icon(Icons.undo)),
+                        )),
+                  ],
+                ),
+              ),
+              Positioned.fill(
+                  child: IgnorePointer(
+                ignoring: !gamePlayState.isGameOver,
+                child: AnimatedOpacity(
+                  opacity: gamePlayState.isGameOver ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 300),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                    child: Container(
+                      width: settingsState.screenSizeData['width'],
+                      height: settingsState.screenSizeData['height'],
+                      color: Colors.black.withOpacity(0.2),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Congratulations!",
+                            style: TextStyle(
+                              fontSize: 36,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            "You completed the puzzle in ${gamePlayState.turnData.length} turns",
+                            style: TextStyle(
+                              fontSize: 32,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              gamePlayState.setIsGameOver(false);
+                              late Map<dynamic, dynamic> levelData =
+                                  settingsState.levelData.firstWhere(
+                                      (element) =>
+                                          element["level"] ==
+                                          gamePlayState.level);
+                              gamePlayState.setLevel(levelData['level']);
+                              Map<dynamic, dynamic> tileData = Helpers()
+                                  .deepCopyTileData(levelData['tileData']);
+                              gamePlayState.setTileData(tileData);
+                              gamePlayState.setRows(levelData['rows']);
+                              gamePlayState.setColumns(levelData['columns']);
+                              gamePlayState.setTurnData([]);
+                              late Map<int, bool> targets = {};
+                              for (int i in levelData['targets']) {
+                                targets[i] = false;
+                              }
+                              gamePlayState.setTargets(targets);
+                            },
+                            child: Container(
+                              color: Colors.black,
+                              // height: gamePlayState.tileSize * 0.8,
+                              width: gamePlayState.tileSize *
+                                  gamePlayState.columns,
+                              child: Center(
+                                child: Text(
+                                  "Play Again?",
+                                  style: TextStyle(
+                                      fontSize: 28, color: Colors.white),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: gamePlayState.tileSize * 0.25,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              print("next level");
+                              gamePlayState.setIsGameOver(false);
+                              Helpers().navigateToGameScreen(
+                                  context,
+                                  gamePlayState,
+                                  settingsState,
+                                  gamePlayState.level + 1);
+                            },
+                            child: Container(
+                              color: Colors.black,
+                              // height: gamePlayState.tileSize * 0.8,
+                              width: gamePlayState.tileSize *
+                                  gamePlayState.columns,
+                              child: Center(
+                                child: Text(
+                                  "Next Level",
+                                  style: TextStyle(
+                                      fontSize: 28, color: Colors.white),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   ),
                 ),
-                Text(gamePlayState.dragDirection ?? ""),
-                GestureDetector(
-                  onPanStart: (details) =>
-                      GameLogic().executePanStart(gamePlayState, details),
-                  onPanUpdate: (details) =>
-                      GameLogic().executePanUpdate(gamePlayState, details),
-                  onPanEnd: (details) =>
-                      GameLogic().executePanEnd(gamePlayState, details),
-                  child: Container(
-                      width: gamePlayState.tileSize * gamePlayState.columns,
-                      height: gamePlayState.tileSize * gamePlayState.rows,
-                      color: Color.fromRGBO(233, 233, 233, 1),
-                      child: Stack(
-                        children: getTileElements(gamePlayState),
-                      )),
-                )
-              ],
-            ),
+              ))
+            ],
           ),
         ),
       );

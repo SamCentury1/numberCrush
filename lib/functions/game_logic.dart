@@ -33,12 +33,34 @@ class GameLogic {
     }
   }
 
+  int getPreviousTurnSelectedTileIndex(GamePlayState gamePlayState) {
+    int res = 0;
+    if (gamePlayState.turnData.length > 1) {
+      Map<dynamic, dynamic> lastTurnTileData =
+          gamePlayState.turnData[gamePlayState.turnData.length - 1]['tileData'];
+      lastTurnTileData.forEach((key, value) {
+        if (value['selected']) {
+          res = key;
+        }
+      });
+    } else {
+      res = 0;
+    }
+    return res;
+  }
+
   void executePanEnd(GamePlayState gamePlayState, var details) {
     Helpers().getDragEndTileIndex(gamePlayState, details);
     if (gamePlayState.dragStartTileIndex == gamePlayState.dragEndTileIndex) {
       if (gamePlayState.tileData[gamePlayState.dragEndTileIndex]["active"]) {
         gamePlayState.setSelectedTileIndex(gamePlayState.dragEndTileIndex!);
-        Helpers().updateTileDataPostTileSelection(gamePlayState);
+        if (gamePlayState.selectedTileIndex !=
+            getPreviousTurnSelectedTileIndex(gamePlayState)) {
+          Helpers().updateTileDataPostTileSelection(gamePlayState);
+          Helpers().setTurnData(gamePlayState, gamePlayState.turnData.length);
+        } else {
+          print("you tried to select that mf again");
+        }
       }
     }
     gamePlayState.setDragStartTileIndex(null);
@@ -47,5 +69,27 @@ class GameLogic {
     gamePlayState.setDragDirection("none");
     gamePlayState.setIsDragViolation(false);
     gamePlayState.setDragEndTileIndex(null);
+  }
+
+  void executeUndo(GamePlayState gamePlayState) {
+    if (gamePlayState.turnData.length > 1) {
+      gamePlayState.turnData.removeLast();
+
+      final Map<dynamic, dynamic> previousTurnData =
+          gamePlayState.turnData[gamePlayState.turnData.length - 1];
+      final Map<dynamic, dynamic> previousTileData =
+          Helpers().deepCopyTileData(previousTurnData['tileData']);
+      final Map<int, bool> previousTargetData =
+          Helpers().deepCopyTargetData(previousTurnData['targets']);
+
+      List<Map<String, dynamic>> newTurnData =
+          List.from(gamePlayState.turnData);
+      gamePlayState.setTurnData(newTurnData);
+
+      gamePlayState.setTileData(previousTileData);
+      gamePlayState.setTargets(previousTargetData);
+
+      // Helpers().updateTileDataPostTileSelection(gamePlayState);
+    }
   }
 }

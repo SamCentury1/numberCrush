@@ -8,9 +8,16 @@ class GamePlayState extends ChangeNotifier {
     notifyListeners();
   }
 
-  late Map<dynamic, dynamic> _targets = {};
-  Map<dynamic, dynamic> get targets => _targets;
-  void setTargets(Map<dynamic, dynamic> value) {
+  late List<Map<dynamic, dynamic>> _turnData = [];
+  List<Map<dynamic, dynamic>> get turnData => _turnData;
+  void setTurnData(List<Map<dynamic, dynamic>> value) {
+    _turnData = value;
+    notifyListeners();
+  }
+
+  late Map<int, bool> _targets = {};
+  Map<int, bool> get targets => _targets;
+  void setTargets(Map<int, bool> value) {
     _targets = value;
     notifyListeners();
   }
@@ -96,6 +103,13 @@ class GamePlayState extends ChangeNotifier {
   bool get isDragViolation => _isDragViolation;
   void setIsDragViolation(bool value) {
     _isDragViolation = value;
+    notifyListeners();
+  }
+
+  late bool _isGameOver = false;
+  bool get isGameOver => _isGameOver;
+  void setIsGameOver(bool value) {
+    _isGameOver = value;
     notifyListeners();
   }
 }

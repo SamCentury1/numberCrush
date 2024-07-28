@@ -1,8 +1,35 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+import 'package:number_crush/functions/game_logic.dart';
 import 'package:number_crush/providers/game_play_state.dart';
+import 'package:number_crush/providers/settings_state.dart';
+import 'package:number_crush/screens/game_screen/game_screen.dart';
 
 class Helpers {
+  void navigateToGameScreen(BuildContext context, GamePlayState gamePlayState,
+      SettingsState settingsState, int levelIndex) {
+    late Map<dynamic, dynamic> levelData = settingsState.levelData
+        .firstWhere((element) => element["level"] == levelIndex);
+    gamePlayState.setTileSize(
+        (settingsState.screenSizeData['width'] * 0.95) / levelData['columns']);
+    gamePlayState.setLevel(levelData['level']);
+    Map<dynamic, dynamic> tileData =
+        Helpers().deepCopyTileData(levelData['tileData']);
+    gamePlayState.setTileData(tileData);
+    gamePlayState.setRows(levelData['rows']);
+    gamePlayState.setColumns(levelData['columns']);
+    gamePlayState.setTurnData([]);
+    late Map<int, bool> targets = {};
+    for (int i in levelData['targets']) {
+      targets[i] = false;
+    }
+    gamePlayState.setTargets(targets);
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const GameScreen()));
+    Helpers().setTurnData(gamePlayState, 0);
+  }
+
   Offset getTilePosition(GamePlayState gamePlayState, int tileIndex) {
     final Map<String, dynamic> tileObject = gamePlayState.tileData[tileIndex];
     final int row = int.parse(tileObject['id'].split("_")[0]);
@@ -48,7 +75,6 @@ class Helpers {
     gamePlayState.tileData.forEach((key, value) {
       if (value["id"] == tileId) {
         res = value;
-        res["key"] = key;
       }
     });
     return res;
@@ -265,6 +291,8 @@ class Helpers {
       print("something went wrong : action = $action");
     }
     validateScore(gamePlayState);
+
+    setTurnData(gamePlayState, gamePlayState.turnData.length);
   }
 
   void validateScore(GamePlayState gamePlayState) {
@@ -277,6 +305,22 @@ class Helpers {
         gamePlayState.targets[key] = true;
       }
     });
+
+    checkGameOver(gamePlayState);
+  }
+
+  void checkGameOver(GamePlayState gamePlayState) {
+    int targets = gamePlayState.targets.length;
+    int completed = 0;
+    gamePlayState.targets.forEach((key, value) {
+      if (value) {
+        completed++;
+      }
+    });
+    if (targets == completed) {
+      print("found all targets");
+      gamePlayState.setIsGameOver(true);
+    }
   }
 
   void executeMove(GamePlayState gamePlayState,
@@ -284,23 +328,23 @@ class Helpers {
     final int? sourceTile = gamePlayState.dragStartTileIndex;
     final int targetTile = targetObject["tile"]["key"];
     final int sourceBody = sourceObject["body"];
-    gamePlayState.setPreviousTileData(gamePlayState.tileData);
-    if (sourceObject["selected"]) {
-      gamePlayState.setSelectedTileIndex(targetTile);
-    }
+    // if (sourceObject["selected"]) {
+    //   gamePlayState.setSelectedTileIndex(targetTile);
+    // }
     gamePlayState.tileData.forEach((key, value) {
       if (key == sourceTile) {
         value.update("active", (v) => false);
         value.update("body", (v) => 0);
       } else if (key == targetTile) {
         value.update("active", (v) => true);
+        // value.update("selected", (v) => true);
         value.update("body", (v) => sourceBody);
       }
     });
-    if (sourceObject["selected"]) {
-      gamePlayState.setSelectedTileIndex(targetTile);
-      updateTileDataPostTileSelection(gamePlayState);
-    }
+    // if (sourceObject["selected"]) {
+    gamePlayState.setSelectedTileIndex(targetTile);
+    updateTileDataPostTileSelection(gamePlayState);
+    // }
   }
 
   void executeAdd(GamePlayState gamePlayState,
@@ -309,6 +353,7 @@ class Helpers {
     final int sourceBody = sourceObject["body"];
     final int targetTile = targetObject["tile"]["key"];
     final int targetBody = targetObject["tile"]["body"];
+
     gamePlayState.tileData.forEach((key, value) {
       if (key == sourceTile) {
         value.update("active", (v) => false);
@@ -392,5 +437,45 @@ class Helpers {
     int tileIndex =
         getTileIndexWWithId(tileRow, tileCol, gamePlayState.columns);
     gamePlayState.setDragEndTileIndex(tileIndex);
+  }
+
+  Map<dynamic, dynamic> deepCopyTileData(Map<dynamic, dynamic> original) {
+    final Map<dynamic, dynamic> copy = {};
+
+    original.forEach((key, value) {
+      final Map<String, dynamic> valueCopy = {};
+
+      value.forEach((innerKey, innerValue) {
+        valueCopy[innerKey] = innerValue;
+      });
+
+      copy[key] = valueCopy;
+    });
+
+    return copy;
+  }
+
+  Map<int, bool> deepCopyTargetData(Map<int, bool> original) {
+    final Map<int, bool> copy = {};
+
+    original.forEach((key, value) {
+      copy[key] = value;
+    });
+
+    return copy;
+  }
+
+  void setTurnData(GamePlayState gamePlayState, int turn) {
+    final Map<String, dynamic> turnData = {
+      "turn": turn,
+      "tileData": deepCopyTileData(gamePlayState.tileData),
+      "targets": deepCopyTargetData(gamePlayState.targets),
+    };
+
+    List<Map<String, dynamic>> newTurnData =
+        List.from(gamePlayState.turnData); // Create a new list
+    newTurnData.add(turnData);
+
+    gamePlayState.setTurnData(newTurnData);
   }
 }
