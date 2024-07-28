@@ -38,11 +38,15 @@ class _GameScreenState extends State<GameScreen> {
               width: gamePlayState.tileSize * 0.05,
             )),
         child: Center(
-          child: Text(key.toString()),
+          child: Text(key.toString(),
+              style: TextStyle(
+                fontSize: gamePlayState.tileSize * 0.2,
+              )),
         ),
       );
       res.add(targetWidget);
     });
+
     return res;
   }
 
@@ -53,6 +57,14 @@ class _GameScreenState extends State<GameScreen> {
       Widget tile = TileWidget(index: key);
       res.add(tile);
     });
+
+    if (gamePlayState.isDragging) {
+      int? draggedTileIndex = gamePlayState.dragStartTileIndex;
+      res.removeAt(draggedTileIndex!);
+      Widget tile = TileWidget(index: draggedTileIndex!);
+      res.add(tile);
+    }
+
     return res;
   }
 
@@ -63,6 +75,27 @@ class _GameScreenState extends State<GameScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Center(child: Text("Level ${gamePlayState.level}")),
+            actions: [
+              PopupMenuButton<int>(
+                  itemBuilder: (context) => [
+                        PopupMenuItem(
+                          child: Text("Main Menu"),
+                          onTap: () {
+                            Helpers().navigateToMainMenu(context);
+                          },
+                        ),
+                        PopupMenuItem(
+                          child: Text("Restart"),
+                          onTap: () {
+                            Helpers().navigateToGameScreen(
+                                context,
+                                gamePlayState,
+                                settingsState,
+                                gamePlayState.level);
+                          },
+                        ),
+                      ])
+            ],
           ),
           body: Stack(
             children: [
@@ -73,6 +106,45 @@ class _GameScreenState extends State<GameScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    SizedBox(
+                      width: gamePlayState.tileSize * gamePlayState.columns,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                gamePlayState.turnData.length.toString(),
+                                style: TextStyle(fontSize: 24),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Icon(
+                                Icons.touch_app,
+                                size: 24,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: gamePlayState.tileSize * gamePlayState.columns,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              for (int i = 0; i < gamePlayState.lives; i++)
+                                Icon(Icons.replay_circle_filled_sharp)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       width: gamePlayState.tileSize * gamePlayState.columns,
                       height: gamePlayState.tileSize,
@@ -108,7 +180,7 @@ class _GameScreenState extends State<GameScreen> {
                           child: IconButton(
                               onPressed: () =>
                                   GameLogic().executeUndo(gamePlayState),
-                              icon: Icon(Icons.undo)),
+                              icon: Icon(Icons.replay_circle_filled_sharp)),
                         )),
                   ],
                 ),
@@ -131,7 +203,7 @@ class _GameScreenState extends State<GameScreen> {
                           Text(
                             "Congratulations!",
                             style: TextStyle(
-                              fontSize: 36,
+                              fontSize: 28,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -141,7 +213,7 @@ class _GameScreenState extends State<GameScreen> {
                           Text(
                             "You completed the puzzle in ${gamePlayState.turnData.length} turns",
                             style: TextStyle(
-                              fontSize: 32,
+                              fontSize: 24,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -163,6 +235,7 @@ class _GameScreenState extends State<GameScreen> {
                               gamePlayState.setRows(levelData['rows']);
                               gamePlayState.setColumns(levelData['columns']);
                               gamePlayState.setTurnData([]);
+                              gamePlayState.setLives(5);
                               late Map<int, bool> targets = {};
                               for (int i in levelData['targets']) {
                                 targets[i] = false;

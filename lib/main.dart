@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
       child: const MaterialApp(
         title: 'Number Crush',
         home: HomeScreen(),
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
 }
-

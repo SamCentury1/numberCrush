@@ -202,7 +202,7 @@ class SettingsState extends ChangeNotifier {
         3: {
           "key": 3,
           "id": "2_1",
-          "body": 7,
+          "body": 8,
           "selected": false,
           "adjacent": true,
           "active": true
@@ -274,7 +274,7 @@ class SettingsState extends ChangeNotifier {
         2: {
           "key": 2,
           "id": "1_3",
-          "body": 3,
+          "body": 6,
           "selected": false,
           "adjacent": false,
           "active": true

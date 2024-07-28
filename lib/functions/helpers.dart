@@ -5,14 +5,17 @@ import 'package:number_crush/functions/game_logic.dart';
 import 'package:number_crush/providers/game_play_state.dart';
 import 'package:number_crush/providers/settings_state.dart';
 import 'package:number_crush/screens/game_screen/game_screen.dart';
+import 'package:number_crush/screens/home_screen/home_screen.dart';
 
 class Helpers {
   void navigateToGameScreen(BuildContext context, GamePlayState gamePlayState,
       SettingsState settingsState, int levelIndex) {
     late Map<dynamic, dynamic> levelData = settingsState.levelData
         .firstWhere((element) => element["level"] == levelIndex);
-    gamePlayState.setTileSize(
-        (settingsState.screenSizeData['width'] * 0.95) / levelData['columns']);
+    double boardSize = (settingsState.screenSizeData['width'] * 0.95) < 360
+        ? (settingsState.screenSizeData['width'] * 0.95)
+        : 360;
+    gamePlayState.setTileSize(boardSize / levelData['columns']);
     gamePlayState.setLevel(levelData['level']);
     Map<dynamic, dynamic> tileData =
         Helpers().deepCopyTileData(levelData['tileData']);
@@ -20,6 +23,7 @@ class Helpers {
     gamePlayState.setRows(levelData['rows']);
     gamePlayState.setColumns(levelData['columns']);
     gamePlayState.setTurnData([]);
+    gamePlayState.setLives(5);
     late Map<int, bool> targets = {};
     for (int i in levelData['targets']) {
       targets[i] = false;
@@ -28,6 +32,11 @@ class Helpers {
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const GameScreen()));
     Helpers().setTurnData(gamePlayState, 0);
+  }
+
+  void navigateToMainMenu(BuildContext context) {
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const HomeScreen()));
   }
 
   Offset getTilePosition(GamePlayState gamePlayState, int tileIndex) {
@@ -117,6 +126,8 @@ class Helpers {
           } else {
             double updatedY = initialCoords[1];
             double updatedX = coords[0];
+            gamePlayState.setDragType(directionData["right"]["action"]);
+            gamePlayState.setDistanceToExecute((coords[0] - initialCoords[0]));
             if (coords[0] - initialCoords[0] >= gamePlayState.tileSize) {
               updatedX = initialCoords[0] + gamePlayState.tileSize;
               executeTileSwipe(gamePlayState, 'right');
@@ -129,6 +140,8 @@ class Helpers {
           } else {
             double updatedY = initialCoords[1];
             double updatedX = coords[0];
+            gamePlayState.setDragType(directionData["left"]["action"]);
+            gamePlayState.setDistanceToExecute((initialCoords[0] - coords[0]));
             if (initialCoords[0] - coords[0] >= gamePlayState.tileSize) {
               updatedX = initialCoords[0] - gamePlayState.tileSize;
               executeTileSwipe(gamePlayState, 'left');
@@ -141,6 +154,8 @@ class Helpers {
           } else {
             double updatedX = initialCoords[0];
             double updatedY = coords[1];
+            gamePlayState.setDragType(directionData["down"]["action"]);
+            gamePlayState.setDistanceToExecute((coords[1] - initialCoords[1]));
             if (coords[1] - initialCoords[1] >= gamePlayState.tileSize) {
               updatedY = initialCoords[1] + gamePlayState.tileSize;
               executeTileSwipe(gamePlayState, 'down');
@@ -153,6 +168,8 @@ class Helpers {
           } else {
             double updatedX = initialCoords[0];
             double updatedY = coords[1];
+            gamePlayState.setDragType(directionData["up"]["action"]);
+            gamePlayState.setDistanceToExecute((initialCoords[1] - coords[1]));
             if (initialCoords[1] - coords[1] >= gamePlayState.tileSize) {
               updatedY = initialCoords[1] - gamePlayState.tileSize;
               executeTileSwipe(gamePlayState, 'up');
@@ -291,7 +308,8 @@ class Helpers {
       print("something went wrong : action = $action");
     }
     validateScore(gamePlayState);
-
+    gamePlayState.setDistanceToExecute(0);
+    gamePlayState.setDragDirection(null);
     setTurnData(gamePlayState, gamePlayState.turnData.length);
   }
 

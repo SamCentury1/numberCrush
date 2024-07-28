@@ -92,6 +92,13 @@ class GamePlayState extends ChangeNotifier {
     notifyListeners();
   }
 
+  late String? _dragType = null;
+  String? get dragType => _dragType;
+  void setDragType(String? value) {
+    _dragType = value;
+    notifyListeners();
+  }
+
   late bool _isDragging = false;
   bool get isDragging => _isDragging;
   void setIsDragging(bool value) {
@@ -110,6 +117,20 @@ class GamePlayState extends ChangeNotifier {
   bool get isGameOver => _isGameOver;
   void setIsGameOver(bool value) {
     _isGameOver = value;
+    notifyListeners();
+  }
+
+  late double _distanceToExecute = 0.0;
+  double get distanceToExecute => _distanceToExecute;
+  void setDistanceToExecute(double value) {
+    _distanceToExecute = value;
+    notifyListeners();
+  }
+
+  late int _lives = 5;
+  int get lives => _lives;
+  void setLives(int value) {
+    _lives = value;
     notifyListeners();
   }
 }

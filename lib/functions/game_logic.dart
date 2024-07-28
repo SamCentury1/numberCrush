@@ -69,10 +69,11 @@ class GameLogic {
     gamePlayState.setDragDirection("none");
     gamePlayState.setIsDragViolation(false);
     gamePlayState.setDragEndTileIndex(null);
+    gamePlayState.setDragType(null);
   }
 
   void executeUndo(GamePlayState gamePlayState) {
-    if (gamePlayState.turnData.length > 1) {
+    if (gamePlayState.turnData.length > 1 && gamePlayState.lives > 0) {
       gamePlayState.turnData.removeLast();
 
       final Map<dynamic, dynamic> previousTurnData =
@@ -88,6 +89,7 @@ class GameLogic {
 
       gamePlayState.setTileData(previousTileData);
       gamePlayState.setTargets(previousTargetData);
+      gamePlayState.setLives(gamePlayState.lives - 1);
 
       // Helpers().updateTileDataPostTileSelection(gamePlayState);
     }
