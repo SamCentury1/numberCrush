@@ -126,7 +126,7 @@ class Helpers {
           } else {
             double updatedY = initialCoords[1];
             double updatedX = coords[0];
-            gamePlayState.setDragType(directionData["right"]["action"]);
+            gamePlayState.setDragType(directionData["right"]);
             gamePlayState.setDistanceToExecute((coords[0] - initialCoords[0]));
             if (coords[0] - initialCoords[0] >= gamePlayState.tileSize) {
               updatedX = initialCoords[0] + gamePlayState.tileSize;
@@ -140,7 +140,7 @@ class Helpers {
           } else {
             double updatedY = initialCoords[1];
             double updatedX = coords[0];
-            gamePlayState.setDragType(directionData["left"]["action"]);
+            gamePlayState.setDragType(directionData["left"]);
             gamePlayState.setDistanceToExecute((initialCoords[0] - coords[0]));
             if (initialCoords[0] - coords[0] >= gamePlayState.tileSize) {
               updatedX = initialCoords[0] - gamePlayState.tileSize;
@@ -154,7 +154,7 @@ class Helpers {
           } else {
             double updatedX = initialCoords[0];
             double updatedY = coords[1];
-            gamePlayState.setDragType(directionData["down"]["action"]);
+            gamePlayState.setDragType(directionData["down"]);
             gamePlayState.setDistanceToExecute((coords[1] - initialCoords[1]));
             if (coords[1] - initialCoords[1] >= gamePlayState.tileSize) {
               updatedY = initialCoords[1] + gamePlayState.tileSize;
@@ -168,7 +168,7 @@ class Helpers {
           } else {
             double updatedX = initialCoords[0];
             double updatedY = coords[1];
-            gamePlayState.setDragType(directionData["up"]["action"]);
+            gamePlayState.setDragType(directionData["up"]);
             gamePlayState.setDistanceToExecute((initialCoords[1] - coords[1]));
             if (initialCoords[1] - coords[1] >= gamePlayState.tileSize) {
               updatedY = initialCoords[1] - gamePlayState.tileSize;

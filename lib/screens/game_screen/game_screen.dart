@@ -5,6 +5,7 @@ import 'package:number_crush/functions/game_logic.dart';
 import 'package:number_crush/functions/helpers.dart';
 import 'package:number_crush/providers/game_play_state.dart';
 import 'package:number_crush/providers/settings_state.dart';
+import 'package:number_crush/screens/game_screen/components/plus_minus_widget.dart';
 import 'package:number_crush/screens/game_screen/components/tile_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -63,6 +64,11 @@ class _GameScreenState extends State<GameScreen> {
       res.removeAt(draggedTileIndex!);
       Widget tile = TileWidget(index: draggedTileIndex!);
       res.add(tile);
+
+      if (gamePlayState.dragType != null) {
+        Widget plusMinus = PlusMinusWidget();
+        res.add(plusMinus);
+      }
     }
 
     return res;

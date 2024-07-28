@@ -92,9 +92,9 @@ class GamePlayState extends ChangeNotifier {
     notifyListeners();
   }
 
-  late String? _dragType = null;
-  String? get dragType => _dragType;
-  void setDragType(String? value) {
+  late Map<String, dynamic>? _dragType = null;
+  Map<String, dynamic>? get dragType => _dragType;
+  void setDragType(Map<String, dynamic>? value) {
     _dragType = value;
     notifyListeners();
   }

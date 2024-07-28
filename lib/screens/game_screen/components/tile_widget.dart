@@ -19,7 +19,8 @@ class _TileWidgetState extends State<TileWidget> {
       if (tileObject['selected']) {
         res = Colors.green;
       } else if (tileObject['adjacent']) {
-        res = Colors.yellow;
+        // res = Colors.yellow;
+        res = Colors.white;
       } else {
         res = Colors.white;
       }
@@ -32,7 +33,7 @@ class _TileWidgetState extends State<TileWidget> {
   double getOpacity(GamePlayState gamePlayState, int index) {
     late double res = 1.0;
     if (gamePlayState.dragType != null) {
-      final String? action = gamePlayState.dragType;
+      final String action = gamePlayState.dragType!["action"];
       if (gamePlayState.dragStartTileIndex == index && action != "move") {
         res = ((gamePlayState.tileSize - gamePlayState.distanceToExecute) /
             gamePlayState.tileSize);
