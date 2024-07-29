@@ -81,13 +81,22 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 width: gamePlayState.tileSize * 0.9,
                 height: gamePlayState.tileSize * 0.9,
-                color: Colors.yellow,
+                decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 63, 64, 65),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color.fromARGB(209, 150, 151, 151),
+                        offset: Offset(-2.0, 2.0),
+                        blurRadius: 0.0,
+                        spreadRadius: 0.0,
+                      )
+                    ]),
                 child: Center(
                   child: Text(
                     (i + 1).toString(),
                     style: TextStyle(
                         fontSize: gamePlayState.tileSize * 0.3,
-                        color: Colors.black),
+                        color: Colors.white),
                   ),
                 ),
               ),
@@ -118,7 +127,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     width: gamePlayState.tileSize * 6,
                     height: gamePlayState.tileSize,
-                    color: Colors.green,
                     child: Center(
                       child: Text(
                         "Levels",

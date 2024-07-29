@@ -1,20 +1,24 @@
 import 'package:number_crush/functions/helpers.dart';
+import 'package:number_crush/providers/animation_state.dart';
 import 'package:number_crush/providers/game_play_state.dart';
 
 class GameLogic {
   void executePanStart(GamePlayState gamePlayState, var details) {
     late double dx = details.localPosition.dx;
     late double dy = details.localPosition.dy;
-    int tileCol = Helpers()
-        .getTileAxis(dx, gamePlayState.tileSize, gamePlayState.columns);
-    int tileRow =
-        Helpers().getTileAxis(dy, gamePlayState.tileSize, gamePlayState.rows);
-    int tileIndex =
-        Helpers().getTileIndexWWithId(tileRow, tileCol, gamePlayState.columns);
-    gamePlayState.setDragStartTileIndex(tileIndex);
+    if (!gamePlayState.isDragging) {
+      int tileCol = Helpers()
+          .getTileAxis(dx, gamePlayState.tileSize, gamePlayState.columns);
+      int tileRow =
+          Helpers().getTileAxis(dy, gamePlayState.tileSize, gamePlayState.rows);
+      int tileIndex = Helpers()
+          .getTileIndexWWithId(tileRow, tileCol, gamePlayState.columns);
+      gamePlayState.setDragStartTileIndex(tileIndex);
+    }
   }
 
-  void executePanUpdate(GamePlayState gamePlayState, var details) {
+  void executePanUpdate(
+      GamePlayState gamePlayState, AnimationState animationState, var details) {
     late bool isOutOfBounds =
         Helpers().getIsOutOfBounds(gamePlayState, details);
     if (!isOutOfBounds) {
@@ -24,7 +28,7 @@ class GameLogic {
         late double dx = details.localPosition.dx;
         late double dy = details.localPosition.dy;
         List<double> coords = [dx, dy];
-        Helpers().getCoordinatesPath(gamePlayState, coords);
+        Helpers().getCoordinatesPath(gamePlayState, animationState, coords);
         gamePlayState.setIsDragging(true);
       }
     } else {
@@ -68,8 +72,9 @@ class GameLogic {
     gamePlayState.setIsDragging(false);
     gamePlayState.setDragDirection("none");
     gamePlayState.setIsDragViolation(false);
-    gamePlayState.setDragEndTileIndex(null);
+    // gamePlayState.setDragEndTileIndex(null);
     gamePlayState.setDragType(null);
+    gamePlayState.setDistanceToExecute(0.0);
   }
 
   void executeUndo(GamePlayState gamePlayState) {

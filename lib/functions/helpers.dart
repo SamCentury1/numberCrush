@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:number_crush/functions/game_logic.dart';
+import 'package:number_crush/providers/animation_state.dart';
 import 'package:number_crush/providers/game_play_state.dart';
 import 'package:number_crush/providers/settings_state.dart';
 import 'package:number_crush/screens/game_screen/game_screen.dart';
@@ -106,7 +107,11 @@ class Helpers {
     return res;
   }
 
-  void getCoordinatesPath(GamePlayState gamePlayState, List<double> coords) {
+  void getCoordinatesPath(
+    GamePlayState gamePlayState,
+    AnimationState animationState,
+    List<double> coords,
+  ) {
     List<List<double>> path = gamePlayState.dragPath;
     if (path.isEmpty) {
       List<List<double>> newPath = [...path, coords];
@@ -123,6 +128,8 @@ class Helpers {
         if (gamePlayState.dragDirection == "right") {
           if (directionData["right"]["action"] == "block") {
             updatedCoords = initialCoords;
+            gamePlayState.setDistanceToExecute(0.0);
+            gamePlayState.setDragType(null);
           } else {
             double updatedY = initialCoords[1];
             double updatedX = coords[0];
@@ -130,13 +137,15 @@ class Helpers {
             gamePlayState.setDistanceToExecute((coords[0] - initialCoords[0]));
             if (coords[0] - initialCoords[0] >= gamePlayState.tileSize) {
               updatedX = initialCoords[0] + gamePlayState.tileSize;
-              executeTileSwipe(gamePlayState, 'right');
+              executeTileSwipe(gamePlayState, 'right', animationState);
             }
             updatedCoords = [updatedX, updatedY];
           }
         } else if (gamePlayState.dragDirection == "left") {
           if (directionData["left"]["action"] == "block") {
             updatedCoords = initialCoords;
+            gamePlayState.setDistanceToExecute(0.0);
+            gamePlayState.setDragType(null);
           } else {
             double updatedY = initialCoords[1];
             double updatedX = coords[0];
@@ -144,13 +153,15 @@ class Helpers {
             gamePlayState.setDistanceToExecute((initialCoords[0] - coords[0]));
             if (initialCoords[0] - coords[0] >= gamePlayState.tileSize) {
               updatedX = initialCoords[0] - gamePlayState.tileSize;
-              executeTileSwipe(gamePlayState, 'left');
+              executeTileSwipe(gamePlayState, 'left', animationState);
             }
             updatedCoords = [updatedX, updatedY];
           }
         } else if (gamePlayState.dragDirection == "down") {
           if (directionData["down"]["action"] == "block") {
             updatedCoords = initialCoords;
+            gamePlayState.setDistanceToExecute(0.0);
+            gamePlayState.setDragType(null);
           } else {
             double updatedX = initialCoords[0];
             double updatedY = coords[1];
@@ -158,13 +169,15 @@ class Helpers {
             gamePlayState.setDistanceToExecute((coords[1] - initialCoords[1]));
             if (coords[1] - initialCoords[1] >= gamePlayState.tileSize) {
               updatedY = initialCoords[1] + gamePlayState.tileSize;
-              executeTileSwipe(gamePlayState, 'down');
+              executeTileSwipe(gamePlayState, 'down', animationState);
             }
             updatedCoords = [updatedX, updatedY];
           }
         } else if (gamePlayState.dragDirection == "up") {
           if (directionData["up"]["action"] == "block") {
             updatedCoords = initialCoords;
+            gamePlayState.setDistanceToExecute(0.0);
+            gamePlayState.setDragType(null);
           } else {
             double updatedX = initialCoords[0];
             double updatedY = coords[1];
@@ -172,10 +185,12 @@ class Helpers {
             gamePlayState.setDistanceToExecute((initialCoords[1] - coords[1]));
             if (initialCoords[1] - coords[1] >= gamePlayState.tileSize) {
               updatedY = initialCoords[1] - gamePlayState.tileSize;
-              executeTileSwipe(gamePlayState, 'up');
+              executeTileSwipe(gamePlayState, 'up', animationState);
             }
             updatedCoords = [updatedX, updatedY];
           }
+        } else {
+          gamePlayState.setDragType(null);
         }
         List<List<double>> newPath = [...path, updatedCoords];
         gamePlayState.setDragPath(newPath);
@@ -188,40 +203,27 @@ class Helpers {
     final List<double> lastCoords = gamePlayState.dragPath.isEmpty
         ? firstCoords
         : gamePlayState.dragPath[gamePlayState.dragPath.length - 1];
-    late double xTravelled = 0.0;
-    late double yTravelled = 0.0;
     final double initialX = firstCoords[0];
     final double initialY = firstCoords[1];
     final double lastX = lastCoords[0];
     final double lastY = lastCoords[1];
+    late double xDistance = (lastX - initialX);
+    late double yDistance = (lastY - initialY);
+    late double xDistanceAbs = xDistance.abs();
+    late double yDistanceAbs = yDistance.abs();
+    late double gap = gamePlayState.tileSize * 0.05;
 
-    for (int i = 0; i < gamePlayState.dragPath.length; i++) {
-      List<double> coords = gamePlayState.dragPath[i];
-      List<double> prevCoords =
-          i == 0 ? gamePlayState.dragPath[i] : gamePlayState.dragPath[i - 1];
-
-      double xDiff = (prevCoords[0] - coords[0]).abs();
-      xTravelled = xTravelled + xDiff;
-
-      double yDiff = (prevCoords[1] - coords[1]).abs();
-      yTravelled = yTravelled + yDiff;
-    }
-
-    late double xDistance = (lastX - initialX).abs();
-    late double yDistance = (lastY - initialY).abs();
-
-    if (xDistance > gamePlayState.tileSize * 0.05 ||
-        yDistance > gamePlayState.tileSize * 0.05) {
-      if (xDistance > yDistance) {
-        if (lastX > initialX) {
+    if (xDistanceAbs > gap || yDistanceAbs > gap) {
+      if (xDistanceAbs > yDistanceAbs) {
+        if (xDistance > 0) {
           gamePlayState.setDragDirection("right");
-        } else if (lastX < initialX) {
+        } else {
           gamePlayState.setDragDirection("left");
         }
       } else {
-        if (lastY > initialY) {
+        if (yDistance > 0) {
           gamePlayState.setDragDirection("down");
-        } else if (lastY < initialY) {
+        } else {
           gamePlayState.setDragDirection("up");
         }
       }
@@ -291,7 +293,8 @@ class Helpers {
     return res;
   }
 
-  void executeTileSwipe(GamePlayState gamePlayState, String direction) {
+  void executeTileSwipe(GamePlayState gamePlayState, String direction,
+      AnimationState animationState) {
     final Map<String, dynamic> directionData =
         validateSwipeDirection(gamePlayState, gamePlayState.dragStartTileIndex);
     final Map<String, dynamic> actionData = directionData[direction];
@@ -302,15 +305,18 @@ class Helpers {
       executeMove(gamePlayState, sourceTileObject, actionData);
     } else if (action == "add") {
       executeAdd(gamePlayState, sourceTileObject, actionData);
+      animationState.setShouldRunOperationAnimation(true);
     } else if (action == "subtract") {
       executeSubtract(gamePlayState, sourceTileObject, actionData);
+      animationState.setShouldRunOperationAnimation(true);
     } else {
       print("something went wrong : action = $action");
     }
-    validateScore(gamePlayState);
-    gamePlayState.setDistanceToExecute(0);
-    gamePlayState.setDragDirection(null);
+
     setTurnData(gamePlayState, gamePlayState.turnData.length);
+    gamePlayState.setDistanceToExecute(0);
+    validateScore(gamePlayState);
+    gamePlayState.setDragDirection(null);
   }
 
   void validateScore(GamePlayState gamePlayState) {
@@ -483,11 +489,44 @@ class Helpers {
     return copy;
   }
 
+  int? getSourceTileObjectForTurnData(
+      GamePlayState gamePlayState, int? tileId, String direction) {
+    late int? res;
+    if (tileId == null) {
+      res = null;
+    } else {
+      if (direction == "left") {
+        res = tileId + 1;
+      } else if (direction == "right") {
+        res = tileId - 1;
+      } else if (direction == "up") {
+        res = tileId + gamePlayState.columns;
+      } else if (direction == "down") {
+        res = tileId - gamePlayState.columns;
+      }
+    }
+    return res;
+  }
+
   void setTurnData(GamePlayState gamePlayState, int turn) {
+    int? targetId;
+    int? sourceId;
+    String direction = gamePlayState.dragDirection ?? "";
+
+    if (gamePlayState.dragType != null) {
+      targetId = gamePlayState.dragType!["tile"]["key"];
+      sourceId =
+          getSourceTileObjectForTurnData(gamePlayState, targetId, direction);
+    }
+
     final Map<String, dynamic> turnData = {
       "turn": turn,
       "tileData": deepCopyTileData(gamePlayState.tileData),
       "targets": deepCopyTargetData(gamePlayState.targets),
+      "outcome": gamePlayState.dragType!["action"],
+      "direction": gamePlayState.dragDirection,
+      "sourceTile": sourceId,
+      "targetTile": targetId,
     };
 
     List<Map<String, dynamic>> newTurnData =
@@ -495,5 +534,29 @@ class Helpers {
     newTurnData.add(turnData);
 
     gamePlayState.setTurnData(newTurnData);
+    gamePlayState.setDragType(null);
+  }
+
+  double getOpacity(GamePlayState gamePlayState, int index) {
+    late double res = 1.0;
+    if (gamePlayState.dragType != null) {
+      final String action = gamePlayState.dragType!["action"];
+      if (gamePlayState.dragStartTileIndex == index && action != "move") {
+        res = ((gamePlayState.tileSize - gamePlayState.distanceToExecute) /
+            gamePlayState.tileSize);
+      } else {
+        res = 1.0;
+      }
+    } else {
+      res = 1.0;
+    }
+
+    if (res > 1.0) {
+      return res = 1.0;
+    }
+    if (res < 0.0) {
+      return res = 0.0;
+    }
+    return res;
   }
 }
