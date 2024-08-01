@@ -6,7 +6,11 @@ import 'package:number_crush/functions/helpers.dart';
 import 'package:number_crush/providers/animation_state.dart';
 import 'package:number_crush/providers/game_play_state.dart';
 import 'package:number_crush/providers/settings_state.dart';
+import 'package:number_crush/screens/game_screen/components/number_found_widget.dart';
 import 'package:number_crush/screens/game_screen/components/plus_minus_widget.dart';
+import 'package:number_crush/screens/game_screen/components/targets/target_animation.dart';
+import 'package:number_crush/screens/game_screen/components/targets/target_widget.dart';
+// import 'package:number_crush/screens/game_screen/components/targets/target_widget.dart';
 import 'package:number_crush/screens/game_screen/components/tile_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -17,60 +21,181 @@ class GameScreen extends StatefulWidget {
   State<GameScreen> createState() => _GameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> {
+class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   late SettingsState settingsState;
-  // late GamePlayState gamePlayState;
+  late AnimationState animationState;
+  late GamePlayState gamePlayState;
+  late AnimationController shadowController;
+
+  late Animation<double> shadowAnimation;
+  late Animation<double> plusMinusPositionAnimation;
+  late Animation<double> plusMinusOpacityAnimation;
+  late Animation<double> tileBodySizeAnimation;
+  late Animation<double> tileTextShadowAnimation;
+
+  late AnimationController numberFoundController;
+  
+
   @override
   void initState() {
     super.initState();
+    animationState = Provider.of<AnimationState>(context, listen: false);
     settingsState = Provider.of<SettingsState>(context, listen: false);
+    gamePlayState = Provider.of<GamePlayState>(context, listen: false);
+    initializeAnimations();
+    animationState.addListener(handleAnimationStateChange);
   }
+
+  void initializeAnimations() {
+    shadowController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+
+    final List<TweenSequenceItem<double>> shadowSequence = [
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0,end: 1.0,),weight: 20.0),
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 1.0,end: 0.0,),weight: 20.0),
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0,end: 0.0,),weight: 60.0),
+    ];
+    shadowAnimation = TweenSequence<double>(shadowSequence).animate(shadowController);
+
+    final List<TweenSequenceItem<double>> plusMinusOpacitySequence = [
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 1.0,end: 1.0,),weight: 60.0),
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 1.0,end: 0.0,),weight: 40.0),
+    ];
+    plusMinusOpacityAnimation = TweenSequence<double>(plusMinusOpacitySequence).animate(shadowController);
+
+    final List<TweenSequenceItem<double>> plusMinusPositionSequence = [
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0,end: 0.8,),weight: 60.0),
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 0.8,end: 1.0,),weight: 40.0),
+    ];
+    plusMinusPositionAnimation =TweenSequence<double>(plusMinusPositionSequence).animate(shadowController);
+
+    final List<TweenSequenceItem<double>> tileBodySizeSequence = [
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0,end: 1.1,),weight: 30.0),
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 1.1,end: 1.0,),weight: 10.0),
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 1.0,end: 1.0,),weight: 60.0),
+    ];    
+    tileBodySizeAnimation =TweenSequence<double>(tileBodySizeSequence).animate(shadowController);
+
+    final List<TweenSequenceItem<double>> tileTextShadowSequence = [
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0,end: 1.0,),weight: 30.0),
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 1.0,end: 0.0,),weight: 10.0),
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0,end: 0.0,),weight: 60.0),
+    ];    
+    tileTextShadowAnimation =TweenSequence<double>(tileTextShadowSequence).animate(shadowController);    
+
+    shadowController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        animationState.setShouldRunOperationAnimation(false);
+      }
+    });
+
+
+
+
+    numberFoundController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+
+
+    numberFoundController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        animationState.setShouldRunNumberFoundAnimation(false);
+      }
+    });     
+  }
+
+  void handleAnimationStateChange() {
+    if (animationState.shouldRunOperationAnimation) {
+      executeAnimations();
+    }
+
+    if (animationState.shouldRunNumberFoundAnimation) {
+      executeNumberAnimations();
+    }
+  }
+
+  void executeAnimations() {
+    shadowController.reset();
+    shadowController.forward();
+  }
+
+  void executeNumberAnimations() {
+    numberFoundController.reset();
+    numberFoundController.forward();
+  }  
+
+
 
   List<Widget> getTargetElements(GamePlayState gamePlayState) {
     final Map<dynamic, dynamic> items = gamePlayState.targets;
+    late List<int> targets = [];
     late List<Widget> res = [];
+    late int index = 0;
     items.forEach((key, value) {
-      Widget targetWidget = Container(
-        width: gamePlayState.tileSize * 0.5,
-        height: gamePlayState.tileSize * 0.5,
-        decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(60.0)),
-            border: Border.all(
-              color: value ? Colors.green : Colors.grey.withOpacity(0.5),
-              width: gamePlayState.tileSize * 0.05,
-            )),
-        child: Center(
-          child: Text(key.toString(),
-              style: TextStyle(
-                fontSize: gamePlayState.tileSize * 0.2,
-              )),
-        ),
-      );
+      Map<String,dynamic> targetData = {"index":index, "number": key,"isFound":value};
+      Widget targetWidget = TargetWidget(data: targetData);
+      targets.add(key);
+      index = index + 1;
       res.add(targetWidget);
     });
+
+    if (animationState.shouldRunNumberFoundAnimation) {
+      final int? foundNumber = Helpers().getFoundNumber(gamePlayState);
+      int targetIndex = targets.indexOf(foundNumber!);
+      Map<String,dynamic> targetData = {"index":targetIndex,"number":foundNumber, "isFound":true};
+      Widget targetWidget = TargetAnimation(data: targetData, numberFoundController: numberFoundController);
+      res.add(targetWidget);
+    }
 
     return res;
   }
 
-  List<Widget> getTileElements(
-      GamePlayState gamePlayState, AnimationState animationState) {
+  List<Widget> getTileElements( GamePlayState gamePlayState, AnimationState animationState) {
     late List<Widget> res = [];
     final Map<dynamic, dynamic> items = gamePlayState.tileData;
     items.forEach((key, value) {
-      Widget tile = TileWidget(index: key);
+      Widget tile = TileWidget(
+        index: key,
+        operationController: shadowController,
+        operationShadowAnimation: tileTextShadowAnimation,
+        operationSizeAnimation: tileBodySizeAnimation,
+      );
       res.add(tile);
     });
 
     if (gamePlayState.isDragging) {
       int? draggedTileIndex = gamePlayState.dragStartTileIndex;
       res.removeAt(draggedTileIndex!);
-      Widget tile = TileWidget(index: draggedTileIndex!);
+      Widget tile = TileWidget(
+        index: draggedTileIndex!,
+        operationController: shadowController,
+        operationShadowAnimation: tileTextShadowAnimation,
+        operationSizeAnimation: tileBodySizeAnimation,
+      );
       res.add(tile);
     }
     if (gamePlayState.dragType != null ||
         animationState.shouldRunOperationAnimation) {
-      Widget plusMinus = PlusMinusWidget();
+      Widget plusMinus = PlusMinusWidget(
+        operationController: shadowController,
+        operationPositionAnimation: plusMinusPositionAnimation,
+        operationOpacityAnimation: plusMinusOpacityAnimation,
+      );
       res.add(plusMinus);
+    }
+
+    if (animationState.shouldRunOperationAnimation) {
+      final Map<dynamic, dynamic> prevTurn = gamePlayState.turnData[gamePlayState.turnData.length - 1]; 
+      final int targetTile = prevTurn["targetTile"];
+      Widget numberFoundWidget = NumberFoundWidget(
+        index: targetTile,
+        animationController: shadowController, 
+        wordFoundController: numberFoundController,
+      );
+      res.add(numberFoundWidget);
     }
 
     return res;
@@ -134,6 +259,7 @@ class _GameScreenState extends State<GameScreen> {
                                 Icon(
                                   Icons.touch_app,
                                   size: 24,
+                                  color: Color.fromARGB(255, 63, 64, 65),
                                 ),
                               ],
                             ),
@@ -149,7 +275,7 @@ class _GameScreenState extends State<GameScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 for (int i = 0; i < gamePlayState.lives; i++)
-                                  Icon(Icons.replay_circle_filled_sharp)
+                                  Icon(Icons.replay_circle_filled_sharp, color: Color.fromARGB(255, 63, 64, 65),)
                               ],
                             ),
                           ),
@@ -159,32 +285,31 @@ class _GameScreenState extends State<GameScreen> {
                         width: gamePlayState.tileSize * gamePlayState.columns,
                         height: gamePlayState.tileSize,
                         child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          child: Stack(
                             children: getTargetElements(gamePlayState),
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: gamePlayState.tileSize * 0.2,
-                        child: Text(gamePlayState.dragType.toString()),
-                      ),
-                      GestureDetector(
-                        onPanStart: (details) =>
-                            GameLogic().executePanStart(gamePlayState, details),
-                        onPanUpdate: (details) => GameLogic().executePanUpdate(
-                            gamePlayState, animationState, details),
-                        onPanEnd: (details) =>
-                            GameLogic().executePanEnd(gamePlayState, details),
-                        child: Container(
-                            width:
-                                gamePlayState.tileSize * gamePlayState.columns,
+                      // SizedBox(
+                      //   height: gamePlayState.tileSize * 0.2,
+                      //   child: Text(gamePlayState.dragType.toString()),
+                      // ),
+                      IgnorePointer(
+                        ignoring: gamePlayState.isDragging,
+                        child: GestureDetector(
+                          onPanStart: (details) => GameLogic().executePanStart(gamePlayState, details),
+                          onPanUpdate: (details) => GameLogic().executePanUpdate(gamePlayState, animationState, details),
+                          onPanEnd: (details) => GameLogic().executePanEnd(gamePlayState, details),
+                          child: Container(
+                            width: gamePlayState.tileSize * gamePlayState.columns,
                             height: gamePlayState.tileSize * gamePlayState.rows,
                             color: Color.fromRGBO(233, 233, 233, 1),
                             child: Stack(
                               children: getTileElements(
                                   gamePlayState, animationState),
-                            )),
+                            )
+                          ),
+                        ),
                       ),
                       SizedBox(
                           width: gamePlayState.tileSize,

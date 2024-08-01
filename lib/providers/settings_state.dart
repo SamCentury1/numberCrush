@@ -15,78 +15,15 @@ class SettingsState extends ChangeNotifier {
       "columns": 3,
       "targets": [12, 16, 22, 27, 31],
       "tileData": {
-        0: {
-          "key": 0,
-          "id": "1_1",
-          "body": 6,
-          "selected": true,
-          "adjacent": false,
-          "active": true
-        },
-        1: {
-          "key": 1,
-          "id": "1_2",
-          "body": 1,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        2: {
-          "key": 2,
-          "id": "1_3",
-          "body": 4,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        3: {
-          "key": 3,
-          "id": "2_1",
-          "body": 7,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        4: {
-          "key": 4,
-          "id": "2_2",
-          "body": 3,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        5: {
-          "key": 5,
-          "id": "2_3",
-          "body": 8,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        6: {
-          "key": 6,
-          "id": "3_1",
-          "body": 4,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        7: {
-          "key": 7,
-          "id": "3_2",
-          "body": 6,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        8: {
-          "key": 8,
-          "id": "3_3",
-          "body": 2,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
+        0: {"key": 0,"id": "1_1","body": 6,"selected": true,"adjacent": false,"active": true},
+        1: {"key": 1,"id": "1_2","body": 1,"selected": false,"adjacent": true,"active": true},
+        2: {"key": 2,"id": "1_3","body": 4,"selected": false,"adjacent": false,"active": true},
+        3: {"key": 3,"id": "2_1","body": 7,"selected": false,"adjacent": true,"active": true},
+        4: {"key": 4,"id": "2_2","body": 3,"selected": false,"adjacent": false,"active": true},
+        5: {"key": 5,"id": "2_3","body": 8,"selected": false,"adjacent": false,"active": true},
+        6: {"key": 6,"id": "3_1","body": 4,"selected": false,"adjacent": false,"active": true},
+        7: {"key": 7,"id": "3_2","body": 6,"selected": false,"adjacent": false,"active": true},
+        8: {"key": 8,"id": "3_3","body": 2,"selected": false,"adjacent": false,"active": true},
       }
     },
     {
@@ -95,78 +32,15 @@ class SettingsState extends ChangeNotifier {
       "columns": 3,
       "targets": [15, 21, 24, 31, 38],
       "tileData": {
-        0: {
-          "key": 0,
-          "id": "1_1",
-          "body": 3,
-          "selected": true,
-          "adjacent": false,
-          "active": true
-        },
-        1: {
-          "key": 1,
-          "id": "1_2",
-          "body": 4,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        2: {
-          "key": 2,
-          "id": "1_3",
-          "body": 6,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        3: {
-          "key": 3,
-          "id": "2_1",
-          "body": 1,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        4: {
-          "key": 4,
-          "id": "2_2",
-          "body": 6,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        5: {
-          "key": 5,
-          "id": "2_3",
-          "body": 2,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        6: {
-          "key": 6,
-          "id": "3_1",
-          "body": 7,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        7: {
-          "key": 7,
-          "id": "3_2",
-          "body": 5,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        8: {
-          "key": 8,
-          "id": "3_3",
-          "body": 4,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
+        0: {"key": 0,"id": "1_1","body": 3,"selected": true,"adjacent": false,"active": true},
+        1: {"key": 1,"id": "1_2","body": 4,"selected": false,"adjacent": true,"active": true},
+        2: {"key": 2,"id": "1_3","body": 6,"selected": false,"adjacent": false,"active": true},
+        3: {"key": 3,"id": "2_1","body": 1,"selected": false,"adjacent": true,"active": true},
+        4: {"key": 4,"id": "2_2","body": 6,"selected": false,"adjacent": false,"active": true},
+        5: {"key": 5,"id": "2_3","body": 2,"selected": false,"adjacent": false,"active": true},
+        6: {"key": 6,"id": "3_1","body": 7,"selected": false,"adjacent": false,"active": true},
+        7: {"key": 7,"id": "3_2","body": 5,"selected": false,"adjacent": false,"active": true},
+        8: {"key": 8,"id": "3_3","body": 4,"selected": false,"adjacent": false,"active": true},
       }
     },
     {
@@ -175,78 +49,15 @@ class SettingsState extends ChangeNotifier {
       "columns": 3,
       "targets": [11, 19, 25, 33, 37],
       "tileData": {
-        0: {
-          "key": 0,
-          "id": "1_1",
-          "body": 4,
-          "selected": true,
-          "adjacent": false,
-          "active": true
-        },
-        1: {
-          "key": 1,
-          "id": "1_2",
-          "body": 6,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        2: {
-          "key": 2,
-          "id": "1_3",
-          "body": 1,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        3: {
-          "key": 3,
-          "id": "2_1",
-          "body": 8,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        4: {
-          "key": 4,
-          "id": "2_2",
-          "body": 7,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        5: {
-          "key": 5,
-          "id": "2_3",
-          "body": 1,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        6: {
-          "key": 6,
-          "id": "3_1",
-          "body": 5,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        7: {
-          "key": 7,
-          "id": "3_2",
-          "body": 3,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        8: {
-          "key": 8,
-          "id": "3_3",
-          "body": 6,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
+        0: {"key": 0,"id": "1_1","body": 4,"selected": true,"adjacent": false,"active": true},
+        1: {"key": 1,"id": "1_2","body": 6,"selected": false,"adjacent": true,"active": true},
+        2: {"key": 2,"id": "1_3","body": 1,"selected": false,"adjacent": false,"active": true},
+        3: {"key": 3,"id": "2_1","body": 8,"selected": false,"adjacent": true,"active": true},
+        4: {"key": 4,"id": "2_2","body": 7,"selected": false,"adjacent": false,"active": true},
+        5: {"key": 5,"id": "2_3","body": 1,"selected": false,"adjacent": false,"active": true},
+        6: {"key": 6,"id": "3_1","body": 5,"selected": false,"adjacent": false,"active": true},
+        7: {"key": 7,"id": "3_2","body": 3,"selected": false,"adjacent": false,"active": true},
+        8: {"key": 8,"id": "3_3","body": 6,"selected": false,"adjacent": false,"active": true},
       }
     },
     {
@@ -255,78 +66,15 @@ class SettingsState extends ChangeNotifier {
       "columns": 3,
       "targets": [10, 16, 28, 36, 46],
       "tileData": {
-        0: {
-          "key": 0,
-          "id": "1_1",
-          "body": 4,
-          "selected": true,
-          "adjacent": false,
-          "active": true
-        },
-        1: {
-          "key": 1,
-          "id": "1_2",
-          "body": 9,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        2: {
-          "key": 2,
-          "id": "1_3",
-          "body": 6,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        3: {
-          "key": 3,
-          "id": "2_1",
-          "body": 7,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        4: {
-          "key": 4,
-          "id": "2_2",
-          "body": 8,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        5: {
-          "key": 5,
-          "id": "2_3",
-          "body": 2,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        6: {
-          "key": 6,
-          "id": "3_1",
-          "body": 9,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        7: {
-          "key": 7,
-          "id": "3_2",
-          "body": 3,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        8: {
-          "key": 8,
-          "id": "3_3",
-          "body": 4,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
+        0: {"key": 0,"id": "1_1","body": 4,"selected": true,"adjacent": false,"active": true},
+        1: {"key": 1,"id": "1_2","body": 9,"selected": false,"adjacent": true,"active": true},
+        2: {"key": 2,"id": "1_3","body": 6,"selected": false,"adjacent": false,"active": true},
+        3: {"key": 3,"id": "2_1","body": 7,"selected": false,"adjacent": true,"active": true},
+        4: {"key": 4,"id": "2_2","body": 8,"selected": false,"adjacent": false,"active": true},
+        5: {"key": 5,"id": "2_3","body": 2,"selected": false,"adjacent": false,"active": true},
+        6: {"key": 6,"id": "3_1","body": 9,"selected": false,"adjacent": false,"active": true},
+        7: {"key": 7,"id": "3_2","body": 3,"selected": false,"adjacent": false,"active": true},
+        8: {"key": 8,"id": "3_3","body": 4,"selected": false,"adjacent": false,"active": true},
       }
     },
     {
@@ -335,78 +83,15 @@ class SettingsState extends ChangeNotifier {
       "columns": 3,
       "targets": [11, 22, 33, 44, 55],
       "tileData": {
-        0: {
-          "key": 0,
-          "id": "1_1",
-          "body": 1,
-          "selected": true,
-          "adjacent": false,
-          "active": true
-        },
-        1: {
-          "key": 1,
-          "id": "1_2",
-          "body": 7,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        2: {
-          "key": 2,
-          "id": "1_3",
-          "body": 3,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        3: {
-          "key": 3,
-          "id": "2_1",
-          "body": 9,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        4: {
-          "key": 4,
-          "id": "2_2",
-          "body": 3,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        5: {
-          "key": 5,
-          "id": "2_3",
-          "body": 5,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        6: {
-          "key": 6,
-          "id": "3_1",
-          "body": 9,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        7: {
-          "key": 7,
-          "id": "3_2",
-          "body": 1,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        8: {
-          "key": 8,
-          "id": "3_3",
-          "body": 4,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
+        0: {"key": 0,"id": "1_1","body": 1,"selected": true,"adjacent": false,"active": true},
+        1: {"key": 1,"id": "1_2","body": 7,"selected": false,"adjacent": true,"active": true},
+        2: {"key": 2,"id": "1_3","body": 3,"selected": false,"adjacent": false,"active": true},
+        3: {"key": 3,"id": "2_1","body": 9,"selected": false,"adjacent": true,"active": true},
+        4: {"key": 4,"id": "2_2","body": 3,"selected": false,"adjacent": false,"active": true},
+        5: {"key": 5,"id": "2_3","body": 5,"selected": false,"adjacent": false,"active": true},
+        6: {"key": 6,"id": "3_1","body": 9,"selected": false,"adjacent": false,"active": true},
+        7: {"key": 7,"id": "3_2","body": 1,"selected": false,"adjacent": false,"active": true},
+        8: {"key": 8,"id": "3_3","body": 4,"selected": false,"adjacent": false,"active": true},
       }
     },
     {
@@ -415,78 +100,15 @@ class SettingsState extends ChangeNotifier {
       "columns": 3,
       "targets": [12, 23, 24, 35, 41],
       "tileData": {
-        0: {
-          "key": 0,
-          "id": "1_1",
-          "body": 6,
-          "selected": true,
-          "adjacent": false,
-          "active": true
-        },
-        1: {
-          "key": 1,
-          "id": "1_2",
-          "body": 1,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        2: {
-          "key": 2,
-          "id": "1_3",
-          "body": 6,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        3: {
-          "key": 3,
-          "id": "2_1",
-          "body": 5,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        4: {
-          "key": 4,
-          "id": "2_2",
-          "body": 7,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        5: {
-          "key": 5,
-          "id": "2_3",
-          "body": 1,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        6: {
-          "key": 6,
-          "id": "3_1",
-          "body": 5,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        7: {
-          "key": 7,
-          "id": "3_2",
-          "body": 8,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        8: {
-          "key": 8,
-          "id": "3_3",
-          "body": 8,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
+        0: {"key": 0,"id": "1_1","body": 6,"selected": true,"adjacent": false,"active": true},
+        1: {"key": 1,"id": "1_2","body": 1,"selected": false,"adjacent": true,"active": true},
+        2: {"key": 2,"id": "1_3","body": 6,"selected": false,"adjacent": false,"active": true},
+        3: {"key": 3,"id": "2_1","body": 5,"selected": false,"adjacent": true,"active": true},
+        4: {"key": 4,"id": "2_2","body": 7,"selected": false,"adjacent": false,"active": true},
+        5: {"key": 5,"id": "2_3","body": 1,"selected": false,"adjacent": false,"active": true},
+        6: {"key": 6,"id": "3_1","body": 5,"selected": false,"adjacent": false,"active": true},
+        7: {"key": 7,"id": "3_2","body": 8,"selected": false,"adjacent": false,"active": true},
+        8: {"key": 8,"id": "3_3","body": 8,"selected": false,"adjacent": false,"active": true},
       }
     },
     {
@@ -495,134 +117,22 @@ class SettingsState extends ChangeNotifier {
       "columns": 4,
       "targets": [25, 44, 58, 59, 71],
       "tileData": {
-        0: {
-          "key": 0,
-          "id": "1_1",
-          "body": 3,
-          "selected": true,
-          "adjacent": false,
-          "active": true
-        },
-        1: {
-          "key": 1,
-          "id": "1_2",
-          "body": 4,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        2: {
-          "key": 2,
-          "id": "1_3",
-          "body": 1,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        3: {
-          "key": 3,
-          "id": "1_4",
-          "body": 2,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        4: {
-          "key": 4,
-          "id": "2_1",
-          "body": 6,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        5: {
-          "key": 5,
-          "id": "2_2",
-          "body": 5,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        6: {
-          "key": 6,
-          "id": "2_3",
-          "body": 8,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        7: {
-          "key": 7,
-          "id": "2_4",
-          "body": 1,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        8: {
-          "key": 8,
-          "id": "3_1",
-          "body": 7,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        9: {
-          "key": 9,
-          "id": "3_2",
-          "body": 3,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        10: {
-          "key": 10,
-          "id": "3_3",
-          "body": 9,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        11: {
-          "key": 11,
-          "id": "3_4",
-          "body": 5,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        12: {
-          "key": 12,
-          "id": "4_1",
-          "body": 1,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        13: {
-          "key": 13,
-          "id": "4_2",
-          "body": 5,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        14: {
-          "key": 14,
-          "id": "4_3",
-          "body": 4,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        15: {
-          "key": 15,
-          "id": "4_4",
-          "body": 7,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
+        0: {"key": 0,"id": "1_1","body": 3,"selected": true,"adjacent": false,"active": true},
+        1: {"key": 1,"id": "1_2","body": 4,"selected": false,"adjacent": true,"active": true},
+        2: {"key": 2,"id": "1_3","body": 1,"selected": false,"adjacent": false,"active": true},
+        3: {"key": 3,"id": "1_4","body": 2,"selected": false,"adjacent": false,"active": true},
+        4: {"key": 4,"id": "2_1","body": 6,"selected": false,"adjacent": true,"active": true},
+        5: {"key": 5,"id": "2_2","body": 5,"selected": false,"adjacent": false,"active": true},
+        6: {"key": 6,"id": "2_3","body": 8,"selected": false,"adjacent": false,"active": true},
+        7: {"key": 7,"id": "2_4","body": 1,"selected": false,"adjacent": false,"active": true},
+        8: {"key": 8,"id": "3_1","body": 7,"selected": false,"adjacent": false,"active": true},
+        9: {"key": 9,"id": "3_2","body": 3,"selected": false,"adjacent": false,"active": true},
+        10: {"key": 10,"id": "3_3","body": 9,"selected": false,"adjacent": false,"active": true},
+        11: {"key": 11,"id": "3_4","body": 5,"selected": false,"adjacent": false,"active": true},
+        12: {"key": 12,"id": "4_1","body": 1,"selected": false,"adjacent": false,"active": true},
+        13: {"key": 13,"id": "4_2","body": 5,"selected": false,"adjacent": false,"active": true},
+        14: {"key": 14,"id": "4_3","body": 4,"selected": false,"adjacent": false,"active": true},
+        15: {"key": 15,"id": "4_4","body": 7,"selected": false,"adjacent": false,"active": true},
       }
     },
     {
@@ -631,134 +141,22 @@ class SettingsState extends ChangeNotifier {
       "columns": 4,
       "targets": [23, 45, 46, 56, 83],
       "tileData": {
-        0: {
-          "key": 0,
-          "id": "1_1",
-          "body": 5,
-          "selected": true,
-          "adjacent": false,
-          "active": true
-        },
-        1: {
-          "key": 1,
-          "id": "1_2",
-          "body": 9,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        2: {
-          "key": 2,
-          "id": "1_3",
-          "body": 2,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        3: {
-          "key": 3,
-          "id": "1_4",
-          "body": 9,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        4: {
-          "key": 4,
-          "id": "2_1",
-          "body": 8,
-          "selected": false,
-          "adjacent": true,
-          "active": true
-        },
-        5: {
-          "key": 5,
-          "id": "2_2",
-          "body": 7,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        6: {
-          "key": 6,
-          "id": "2_3",
-          "body": 4,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        7: {
-          "key": 7,
-          "id": "2_4",
-          "body": 6,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        8: {
-          "key": 8,
-          "id": "3_1",
-          "body": 8,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        9: {
-          "key": 9,
-          "id": "3_2",
-          "body": 2,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        10: {
-          "key": 10,
-          "id": "3_3",
-          "body": 5,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        11: {
-          "key": 11,
-          "id": "3_4",
-          "body": 3,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        12: {
-          "key": 12,
-          "id": "4_1",
-          "body": 7,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        13: {
-          "key": 13,
-          "id": "4_2",
-          "body": 9,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        14: {
-          "key": 14,
-          "id": "4_3",
-          "body": 2,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
-        15: {
-          "key": 15,
-          "id": "4_4",
-          "body": 9,
-          "selected": false,
-          "adjacent": false,
-          "active": true
-        },
+        0: {"key": 0,"id": "1_1","body": 5,"selected": true,"adjacent": false,"active": true},
+        1: {"key": 1,"id": "1_2","body": 9,"selected": false,"adjacent": true,"active": true},
+        2: {"key": 2,"id": "1_3","body": 2,"selected": false,"adjacent": false,"active": true},
+        3: {"key": 3,"id": "1_4","body": 9,"selected": false,"adjacent": false,"active": true},
+        4: {"key": 4,"id": "2_1","body": 8,"selected": false,"adjacent": true,"active": true},
+        5: {"key": 5,"id": "2_2","body": 7,"selected": false,"adjacent": false,"active": true},
+        6: {"key": 6,"id": "2_3","body": 4,"selected": false,"adjacent": false,"active": true},
+        7: {"key": 7,"id": "2_4","body": 6,"selected": false,"adjacent": false,"active": true},
+        8: {"key": 8,"id": "3_1","body": 8,"selected": false,"adjacent": false,"active": true},
+        9: {"key": 9,"id": "3_2","body": 2,"selected": false,"adjacent": false,"active": true},
+        10: {"key": 10,"id": "3_3","body": 5,"selected": false,"adjacent": false,"active": true},
+        11: {"key": 11,"id": "3_4","body": 3,"selected": false,"adjacent": false,"active": true},
+        12: {"key": 12,"id": "4_1","body": 7,"selected": false,"adjacent": false,"active": true},
+        13: {"key": 13,"id": "4_2","body": 9,"selected": false,"adjacent": false,"active": true},
+        14: {"key": 14,"id": "4_3","body": 2,"selected": false,"adjacent": false,"active": true},
+        15: {"key": 15,"id": "4_4","body": 9,"selected": false,"adjacent": false,"active": true},
       }
     },
   ];

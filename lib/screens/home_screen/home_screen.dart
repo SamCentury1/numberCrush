@@ -75,8 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Center(
             child: GestureDetector(
               onTap: () {
-                Helpers().navigateToGameScreen(
-                    context, gamePlayState, settingsState, (i + 1));
+                Helpers().navigateToGameScreen(context, gamePlayState, settingsState, (i + 1));
               },
               child: Container(
                 width: gamePlayState.tileSize * 0.9,
@@ -113,8 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Provider.of<SettingsState>(context, listen: false);
     return Scaffold(
       body: SafeArea(
-        child:
-            Consumer<GamePlayState>(builder: (context, gamePlayState, child) {
+        child: Consumer<GamePlayState>(builder: (context, gamePlayState, child) {
           return Container(
             width: _screenWidth,
             child: SingleChildScrollView(

@@ -6,55 +6,22 @@ import 'package:provider/provider.dart';
 
 class TileWidget extends StatefulWidget {
   final int index;
-  const TileWidget({super.key, required this.index});
+  final AnimationController operationController;
+  final Animation<double> operationShadowAnimation;
+  final Animation<double> operationSizeAnimation;
+  
+  const TileWidget(
+      {super.key,
+      required this.index,
+      required this.operationController,
+      required this.operationShadowAnimation,
+      required this.operationSizeAnimation});
 
   @override
   State<TileWidget> createState() => _TileWidgetState();
 }
 
-class _TileWidgetState extends State<TileWidget> with TickerProviderStateMixin {
-  late AnimationState animationState;
-  late GamePlayState gamePlayState;
-  late AnimationController shadowController;
-  late Animation<double> shadowAnimation;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    animationState = Provider.of<AnimationState>(context, listen: false);
-    gamePlayState = Provider.of<GamePlayState>(context, listen: false);
-    initializeAnimations();
-    animationState.addListener(handleAnimationStateChange);
-  }
-
-  void initializeAnimations() {
-    shadowController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 3000),
-    );
-
-    shadowAnimation =
-        Tween<double>(begin: 0.0, end: 20.0).animate(shadowController);
-
-    shadowController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        animationState.setShouldRunOperationAnimation(false);
-      }
-    });
-  }
-
-  void handleAnimationStateChange() {
-    if (animationState.shouldRunOperationAnimation) {
-      executeAnimations();
-    }
-  }
-
-  void executeAnimations() {
-    shadowController.reset();
-    shadowController.forward();
-  }
-
+class _TileWidgetState extends State<TileWidget> {
   // @overridex
   // void dispose() {
   //   // TODO: implement dispose
@@ -67,13 +34,12 @@ class _TileWidgetState extends State<TileWidget> with TickerProviderStateMixin {
     return Consumer<GamePlayState>(
       builder: (context, gamePlayState, child) {
         double op = Helpers().getOpacity(gamePlayState, widget.index);
-        final Map<String, dynamic> tileObject =
-            gamePlayState.tileData[widget.index];
+        final Map<String, dynamic> tileObject = gamePlayState.tileData[widget.index];
         return Positioned(
           top: Helpers().getTilePosition(gamePlayState, widget.index).dy,
           left: Helpers().getTilePosition(gamePlayState, widget.index).dx,
           child: AnimatedBuilder(
-              animation: shadowController,
+              animation: widget.operationController,
               builder: (context, child) {
                 return Opacity(
                   opacity: op,
@@ -93,32 +59,28 @@ class _TileWidgetState extends State<TileWidget> with TickerProviderStateMixin {
                                         boxShadow: getBoxShadow(
                                             gamePlayState,
                                             widget.index,
-                                            shadowController,
-                                            shadowAnimation)),
+                                            widget.operationController,
+                                            widget.operationShadowAnimation)),
                                     child: Center(
                                       child: Text(
                                         tileObject["body"].toString(),
                                         style: TextStyle(
-                                            color: getTextColor(
-                                                gamePlayState, widget.index),
-                                            fontSize:
-                                                gamePlayState.tileSize * 0.3),
+                                            shadows: getTextShadow(
+                                                gamePlayState, 
+                                                widget.index, 
+                                                widget.operationController, 
+                                                widget.operationShadowAnimation),
+                                            color: getTextColor(gamePlayState, widget.index),
+                                            fontSize: getFontSize(
+                                              gamePlayState,
+                                              widget.index,
+                                              widget.operationController,
+                                              widget.operationSizeAnimation
+                                            ) 
+                                        ),
                                       ),
                                     ),
                                   ),
-                                  // Positioned(
-                                  //     top: (gamePlayState.tileSize * 0.2) * 0.5,
-                                  //     left: (gamePlayState.tileSize * 0.2) * 0.5,
-                                  //     child: Container(
-                                  //       width: gamePlayState.tileSize * 0.7,
-                                  //       height: gamePlayState.tileSize * 0.7,
-                                  //       decoration: BoxDecoration(
-                                  //           border: Border.all(
-                                  //               color: getTileColor(
-                                  //                   gamePlayState, widget.index),
-                                  //               width:
-                                  //                   gamePlayState.tileSize * 0.06)),
-                                  //     )),
                                 ],
                               )
                             : SizedBox()),
@@ -131,8 +93,39 @@ class _TileWidgetState extends State<TileWidget> with TickerProviderStateMixin {
   }
 }
 
-List<BoxShadow> getBoxShadow(GamePlayState gamePlayState, int index,
-    AnimationController animationController, Animation shadowAnimation) {
+
+double getFontSize(GamePlayState gamePlayState, int index,AnimationController animationController, Animation animation) {
+  double res = gamePlayState.tileSize * 0.3;
+  if (animationController.isAnimating) {
+    if (gamePlayState.selectedTileIndex == index) {
+      res = gamePlayState.tileSize * 0.3 * (animation.value);
+    }
+  }
+  return res;
+}
+
+List<Shadow> getTextShadow(GamePlayState gamePlayState, int index,AnimationController animationController, Animation animation) {
+  List<Shadow> res  = [];
+  if (animationController.isAnimating) {
+    if (gamePlayState.selectedTileIndex == index) {
+      Shadow shadow = Shadow(
+        // blurRadius: gamePlayState.tileSize*animation.value,
+        blurRadius: 5.0,
+        offset: Offset.zero,
+        color: Colors.white.withOpacity(animation.value),
+      );
+      res.add(shadow);
+    }
+  }
+  return res;
+}
+
+List<BoxShadow> getBoxShadow(
+    GamePlayState gamePlayState, 
+    int index, 
+    AnimationController animationController, 
+    Animation shadowAnimation
+  ) {
   List<BoxShadow> res = [
     BoxShadow(
       color: Colors.black.withOpacity(0.3),
@@ -146,8 +139,8 @@ List<BoxShadow> getBoxShadow(GamePlayState gamePlayState, int index,
       BoxShadow additionalShadow = BoxShadow(
         color: Colors.black.withOpacity(0.3),
         offset: Offset(0, 0),
-        blurRadius: 1.0,
-        spreadRadius: shadowAnimation.value,
+        blurRadius: 7.0,
+        spreadRadius: (shadowAnimation.value * gamePlayState.tileSize * 0.15),
       );
       res.add(additionalShadow);
     }
@@ -155,14 +148,7 @@ List<BoxShadow> getBoxShadow(GamePlayState gamePlayState, int index,
   return res;
 }
 
-double getShadowAnimation(
-    Animation<double> shadowAnimation, GamePlayState gamePlayState, int index) {
-  double res = 0.0;
-  if (gamePlayState.dragEndTileIndex == index) {
-    res = shadowAnimation.value;
-  }
-  return res;
-}
+
 
 Color getTileColor(GamePlayState gamePlayState, int index) {
   Color selectedColor = Color.fromARGB(255, 63, 64, 65);

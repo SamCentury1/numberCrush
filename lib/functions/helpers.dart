@@ -315,23 +315,28 @@ class Helpers {
 
     setTurnData(gamePlayState, gamePlayState.turnData.length);
     gamePlayState.setDistanceToExecute(0);
-    validateScore(gamePlayState);
+    validateScore(gamePlayState, animationState);
     gamePlayState.setDragDirection(null);
   }
 
-  void validateScore(GamePlayState gamePlayState) {
+  void validateScore(GamePlayState gamePlayState, AnimationState animationState) {
     List<int> numbers = [];
     gamePlayState.tileData.forEach((key, value) {
       numbers.add(value["body"]);
     });
+    // bool didScore = false;
     gamePlayState.targets.forEach((key, value) {
       if (numbers.contains(key)) {
-        gamePlayState.targets[key] = true;
+        if (!value) {
+          gamePlayState.targets[key] = true;
+          // didScore = true;
+          animationState.setShouldRunNumberFoundAnimation(true);
+        }
       }
     });
-
     checkGameOver(gamePlayState);
   }
+
 
   void checkGameOver(GamePlayState gamePlayState) {
     int targets = gamePlayState.targets.length;
@@ -342,7 +347,6 @@ class Helpers {
       }
     });
     if (targets == completed) {
-      print("found all targets");
       gamePlayState.setIsGameOver(true);
     }
   }
@@ -455,11 +459,9 @@ class Helpers {
   void getDragEndTileIndex(GamePlayState gamePlayState, var details) {
     late double dx = details.localPosition.dx;
     late double dy = details.localPosition.dy;
-    int tileCol =
-        getTileAxis(dx, gamePlayState.tileSize, gamePlayState.columns);
+    int tileCol = getTileAxis(dx, gamePlayState.tileSize, gamePlayState.columns);
     int tileRow = getTileAxis(dy, gamePlayState.tileSize, gamePlayState.rows);
-    int tileIndex =
-        getTileIndexWWithId(tileRow, tileCol, gamePlayState.columns);
+    int tileIndex = getTileIndexWWithId(tileRow, tileCol, gamePlayState.columns);
     gamePlayState.setDragEndTileIndex(tileIndex);
   }
 
@@ -511,9 +513,11 @@ class Helpers {
   void setTurnData(GamePlayState gamePlayState, int turn) {
     int? targetId;
     int? sourceId;
+    String? outcome;
     String direction = gamePlayState.dragDirection ?? "";
 
     if (gamePlayState.dragType != null) {
+      outcome = gamePlayState.dragType!["action"];
       targetId = gamePlayState.dragType!["tile"]["key"];
       sourceId =
           getSourceTileObjectForTurnData(gamePlayState, targetId, direction);
@@ -523,10 +527,11 @@ class Helpers {
       "turn": turn,
       "tileData": deepCopyTileData(gamePlayState.tileData),
       "targets": deepCopyTargetData(gamePlayState.targets),
-      "outcome": gamePlayState.dragType!["action"],
+      "outcome": outcome,
       "direction": gamePlayState.dragDirection,
       "sourceTile": sourceId,
       "targetTile": targetId,
+      "numberFound": null,
     };
 
     List<Map<String, dynamic>> newTurnData =
@@ -556,6 +561,24 @@ class Helpers {
     }
     if (res < 0.0) {
       return res = 0.0;
+    }
+    return res;
+  }
+
+
+  int? getFoundNumber(GamePlayState gamePlayState) {
+    late int? res = null;
+
+    if (gamePlayState.turnData.length >1) {
+      final Map<dynamic,dynamic> prevTurn1 = gamePlayState.turnData[gamePlayState.turnData.length-1];
+      // final Map<dynamic,dynamic> prevTurn2 = gamePlayState.turnData[gamePlayState.turnData.length-2];
+
+      final Map<int,bool> prevTargets1 = prevTurn1["targets"];
+      gamePlayState.targets.forEach((key,value) {
+        if (prevTargets1[key] != value) {
+          res = key;
+        }
+      });
     }
     return res;
   }

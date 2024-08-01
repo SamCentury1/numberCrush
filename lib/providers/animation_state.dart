@@ -7,4 +7,11 @@ class AnimationState extends ChangeNotifier {
     _shouldRunOperationAnimation = value;
     notifyListeners();
   }
+
+  late bool _shouldRunNumberFoundAnimation = false;
+  bool get shouldRunNumberFoundAnimation => _shouldRunNumberFoundAnimation;
+  void setShouldRunNumberFoundAnimation(bool value) {
+    _shouldRunNumberFoundAnimation = value;
+    notifyListeners();
+  }  
 }
