@@ -9,17 +9,14 @@ import 'package:number_crush/screens/game_screen/game_screen.dart';
 import 'package:number_crush/screens/home_screen/home_screen.dart';
 
 class Helpers {
-  void navigateToGameScreen(BuildContext context, GamePlayState gamePlayState,
-      SettingsState settingsState, int levelIndex) {
-    late Map<dynamic, dynamic> levelData = settingsState.levelData
-        .firstWhere((element) => element["level"] == levelIndex);
+  void navigateToGameScreen(BuildContext context, GamePlayState gamePlayState,SettingsState settingsState, int levelIndex) {
+    late Map<dynamic, dynamic> levelData = settingsState.levelData .firstWhere((element) => element["level"] == levelIndex);
     double boardSize = (settingsState.screenSizeData['width'] * 0.95) < 360
         ? (settingsState.screenSizeData['width'] * 0.95)
         : 360;
     gamePlayState.setTileSize(boardSize / levelData['columns']);
     gamePlayState.setLevel(levelData['level']);
-    Map<dynamic, dynamic> tileData =
-        Helpers().deepCopyTileData(levelData['tileData']);
+    Map<dynamic, dynamic> tileData = Helpers().deepCopyTileData(levelData['tileData']);
     gamePlayState.setTileData(tileData);
     gamePlayState.setRows(levelData['rows']);
     gamePlayState.setColumns(levelData['columns']);
@@ -293,22 +290,27 @@ class Helpers {
     return res;
   }
 
-  void executeTileSwipe(GamePlayState gamePlayState, String direction,
-      AnimationState animationState) {
-    final Map<String, dynamic> directionData =
-        validateSwipeDirection(gamePlayState, gamePlayState.dragStartTileIndex);
+  void executeTileSwipe(GamePlayState gamePlayState, String direction, AnimationState animationState) {
+    final Map<String, dynamic> directionData = validateSwipeDirection(gamePlayState, gamePlayState.dragStartTileIndex);
     final Map<String, dynamic> actionData = directionData[direction];
-    final Map<String, dynamic> sourceTileObject =
-        gamePlayState.tileData[gamePlayState.dragStartTileIndex];
+    final Map<String, dynamic> sourceTileObject = gamePlayState.tileData[gamePlayState.dragStartTileIndex];
     final String? action = actionData["action"];
+    late bool didScore = false;
     if (action == "move") {
       executeMove(gamePlayState, sourceTileObject, actionData);
-    } else if (action == "add") {
-      executeAdd(gamePlayState, sourceTileObject, actionData);
-      animationState.setShouldRunOperationAnimation(true);
-    } else if (action == "subtract") {
-      executeSubtract(gamePlayState, sourceTileObject, actionData);
-      animationState.setShouldRunOperationAnimation(true);
+      animationState.setShouldRunTileSelectedAnimation(true);
+      animationState.setIsAnimating(true);
+      Future.delayed(const Duration(milliseconds: 200), () {
+        animationState.setShouldRunTileSelectedAnimation(false);
+        animationState.setIsAnimating(false);
+      });
+    } else if (action == "add" || action == "subtract") {
+      if (action == "add") {
+        executeAdd(gamePlayState, sourceTileObject, actionData);
+      } else {
+        executeSubtract(gamePlayState, sourceTileObject, actionData);
+      }
+      didScore = true;
     } else {
       print("something went wrong : action = $action");
     }
@@ -316,6 +318,15 @@ class Helpers {
     setTurnData(gamePlayState, gamePlayState.turnData.length);
     gamePlayState.setDistanceToExecute(0);
     validateScore(gamePlayState, animationState);
+
+    if (didScore) {
+      animationState.setShouldRunOperationAnimation(true);
+      animationState.setIsAnimating(true);
+      Future.delayed(const Duration(milliseconds: 600), () {
+        animationState.setShouldRunOperationAnimation(false);
+        animationState.setIsAnimating(false);
+      });
+    }
     gamePlayState.setDragDirection(null);
   }
 
@@ -329,8 +340,11 @@ class Helpers {
       if (numbers.contains(key)) {
         if (!value) {
           gamePlayState.targets[key] = true;
-          // didScore = true;
-          animationState.setShouldRunNumberFoundAnimation(true);
+          // // didScore = true;
+          // animationState.setShouldRunNumberFoundAnimation(true);
+          // Future.delayed(const Duration(milliseconds: 2000), () {
+          //   animationState.setShouldRunNumberFoundAnimation(false);
+          // });          
         }
       }
     });
@@ -347,7 +361,9 @@ class Helpers {
       }
     });
     if (targets == completed) {
-      gamePlayState.setIsGameOver(true);
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        gamePlayState.setIsGameOver(true);
+      });
     }
   }
 
@@ -515,12 +531,23 @@ class Helpers {
     int? sourceId;
     String? outcome;
     String direction = gamePlayState.dragDirection ?? "";
+    int? foundNumber = null;
 
     if (gamePlayState.dragType != null) {
       outcome = gamePlayState.dragType!["action"];
       targetId = gamePlayState.dragType!["tile"]["key"];
-      sourceId =
-          getSourceTileObjectForTurnData(gamePlayState, targetId, direction);
+      sourceId = getSourceTileObjectForTurnData(gamePlayState, targetId, direction);
+    }
+
+    if (outcome == "add" || outcome == "subtract") {
+      int candidate = gamePlayState.tileData[targetId]["body"];
+      gamePlayState.targets.forEach((key,value) {
+        if (!value) {
+          if (key==candidate) {
+            foundNumber = candidate;
+          }
+        }
+      });
     }
 
     final Map<String, dynamic> turnData = {
@@ -531,11 +558,12 @@ class Helpers {
       "direction": gamePlayState.dragDirection,
       "sourceTile": sourceId,
       "targetTile": targetId,
-      "numberFound": null,
+      "numberFound": foundNumber,
     };
 
-    List<Map<String, dynamic>> newTurnData =
-        List.from(gamePlayState.turnData); // Create a new list
+    // print(turnData);
+
+    List<Map<String, dynamic>> newTurnData = List.from(gamePlayState.turnData); // Create a new list
     newTurnData.add(turnData);
 
     gamePlayState.setTurnData(newTurnData);
@@ -572,7 +600,7 @@ class Helpers {
     if (gamePlayState.turnData.length >1) {
       final Map<dynamic,dynamic> prevTurn1 = gamePlayState.turnData[gamePlayState.turnData.length-1];
       // final Map<dynamic,dynamic> prevTurn2 = gamePlayState.turnData[gamePlayState.turnData.length-2];
-
+      // print(prevTurn1);
       final Map<int,bool> prevTargets1 = prevTurn1["targets"];
       gamePlayState.targets.forEach((key,value) {
         if (prevTargets1[key] != value) {
@@ -582,4 +610,37 @@ class Helpers {
     }
     return res;
   }
+
+  int getSelectedTileIndex(Map<dynamic,dynamic> tileData) {
+    int res = 0;
+    tileData.forEach((key, value) {
+      if (value["selected"]) {
+        res = key;
+      }
+    });
+    return res;
+  }
+
+  // void getAnimationOrder(GamePlayState gamePlayState, AnimationState animationState) {
+  //   Map<dynamic,dynamic> prevTurn = gamePlayState.turnData[gamePlayState.turnData.length-1];
+
+  //   int? didScore = getFoundNumber(gamePlayState);
+
+  //   if (didScore != null) {
+  //     animationState.setShouldRunNumberFoundAnimation(true);
+  //     animationState.setShouldRunOperationAnimation(true);
+  //     Future.delayed(const Duration(milliseconds: 2000), () {
+  //       animationState.setShouldRunNumberFoundAnimation(false);
+  //       animationState.setShouldRunOperationAnimation(false);
+  //     });
+  //   } else {
+  //     if (prevTurn["outcome"] == "add" || prevTurn["outcome"] == "subtract") {
+  //       animationState.setShouldRunOperationAnimation(true);
+  //       Future.delayed(const Duration(milliseconds: 600), () {
+  //         animationState.setShouldRunOperationAnimation(false);
+  //       });        
+  //     }  
+  //   }
+
+  // } 
 }

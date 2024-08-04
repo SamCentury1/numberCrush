@@ -15,7 +15,8 @@ class TileWidget extends StatefulWidget {
       required this.index,
       required this.operationController,
       required this.operationShadowAnimation,
-      required this.operationSizeAnimation});
+      required this.operationSizeAnimation,
+    });
 
   @override
   State<TileWidget> createState() => _TileWidgetState();
@@ -54,8 +55,7 @@ class _TileWidgetState extends State<TileWidget> {
                                     width: gamePlayState.tileSize * 0.9,
                                     height: gamePlayState.tileSize * 0.9,
                                     decoration: BoxDecoration(
-                                        color: getTileColor(
-                                            gamePlayState, widget.index),
+                                        color: getTileColor(gamePlayState, widget.index),
                                         boxShadow: getBoxShadow(
                                             gamePlayState,
                                             widget.index,
@@ -150,7 +150,7 @@ List<BoxShadow> getBoxShadow(
 
 
 
-Color getTileColor(GamePlayState gamePlayState, int index) {
+Color getTileColor(GamePlayState gamePlayState, int index,) {
   Color selectedColor = Color.fromARGB(255, 63, 64, 65);
   Color res = Colors.white;
   Map<dynamic, dynamic> tileObject = gamePlayState.tileData[index];

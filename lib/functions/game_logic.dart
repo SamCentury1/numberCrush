@@ -7,23 +7,18 @@ class GameLogic {
     late double dx = details.localPosition.dx;
     late double dy = details.localPosition.dy;
     if (!gamePlayState.isDragging) {
-      int tileCol = Helpers()
-          .getTileAxis(dx, gamePlayState.tileSize, gamePlayState.columns);
-      int tileRow =
-          Helpers().getTileAxis(dy, gamePlayState.tileSize, gamePlayState.rows);
-      int tileIndex = Helpers()
-          .getTileIndexWWithId(tileRow, tileCol, gamePlayState.columns);
+      int tileCol = Helpers().getTileAxis(dx, gamePlayState.tileSize, gamePlayState.columns);
+      int tileRow = Helpers().getTileAxis(dy, gamePlayState.tileSize, gamePlayState.rows);
+      int tileIndex = Helpers().getTileIndexWWithId(tileRow, tileCol, gamePlayState.columns);
       gamePlayState.setDragStartTileIndex(tileIndex);
     }
   }
 
   void executePanUpdate(
       GamePlayState gamePlayState, AnimationState animationState, var details) {
-    late bool isOutOfBounds =
-        Helpers().getIsOutOfBounds(gamePlayState, details);
+    late bool isOutOfBounds = Helpers().getIsOutOfBounds(gamePlayState, details);
     if (!isOutOfBounds) {
-      Map<String, dynamic> tileObject =
-          gamePlayState.tileData[gamePlayState.dragStartTileIndex];
+      Map<String, dynamic> tileObject = gamePlayState.tileData[gamePlayState.dragStartTileIndex];
       if (tileObject["active"]) {
         late double dx = details.localPosition.dx;
         late double dy = details.localPosition.dy;
@@ -53,20 +48,28 @@ class GameLogic {
     return res;
   }
 
-  void executePanEnd(GamePlayState gamePlayState, var details) {
+  void executePanEnd(GamePlayState gamePlayState, AnimationState animationState, var details) {
     Helpers().getDragEndTileIndex(gamePlayState, details);
     if (gamePlayState.dragStartTileIndex == gamePlayState.dragEndTileIndex) {
       if (gamePlayState.tileData[gamePlayState.dragEndTileIndex]["active"]) {
         gamePlayState.setSelectedTileIndex(gamePlayState.dragEndTileIndex!);
-        if (gamePlayState.selectedTileIndex !=
-            getPreviousTurnSelectedTileIndex(gamePlayState)) {
+        if (gamePlayState.selectedTileIndex != getPreviousTurnSelectedTileIndex(gamePlayState)) {
+          animationState.setShouldRunTileSelectedAnimation(true);
+          animationState.setIsAnimating(true);
           Helpers().updateTileDataPostTileSelection(gamePlayState);
           Helpers().setTurnData(gamePlayState, gamePlayState.turnData.length);
+          Future.delayed(const Duration(milliseconds: 200), () {
+            animationState.setShouldRunTileSelectedAnimation(false);
+            animationState.setIsAnimating(false);
+          });
         } else {
           print("you tried to select that mf again");
         }
       }
     }
+
+    // Helpers().getAnimationOrder(gamePlayState,animationState);
+
     gamePlayState.setDragStartTileIndex(null);
     gamePlayState.setDragPath([]);
     gamePlayState.setIsDragging(false);
@@ -81,15 +84,11 @@ class GameLogic {
     if (gamePlayState.turnData.length > 1 && gamePlayState.lives > 0) {
       gamePlayState.turnData.removeLast();
 
-      final Map<dynamic, dynamic> previousTurnData =
-          gamePlayState.turnData[gamePlayState.turnData.length - 1];
-      final Map<dynamic, dynamic> previousTileData =
-          Helpers().deepCopyTileData(previousTurnData['tileData']);
-      final Map<int, bool> previousTargetData =
-          Helpers().deepCopyTargetData(previousTurnData['targets']);
+      final Map<dynamic, dynamic> previousTurnData = gamePlayState.turnData[gamePlayState.turnData.length - 1];
+      final Map<dynamic, dynamic> previousTileData = Helpers().deepCopyTileData(previousTurnData['tileData']);
+      final Map<int, bool> previousTargetData = Helpers().deepCopyTargetData(previousTurnData['targets']);
 
-      List<Map<String, dynamic>> newTurnData =
-          List.from(gamePlayState.turnData);
+      List<Map<String, dynamic>> newTurnData =List.from(gamePlayState.turnData);
       gamePlayState.setTurnData(newTurnData);
 
       gamePlayState.setTileData(previousTileData);
