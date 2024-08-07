@@ -30,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final GamePlayState gamePlayState = Provider.of<GamePlayState>(context, listen: false);
       final SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
